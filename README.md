@@ -123,3 +123,9 @@ Or, easier way, just launch this script :
 # launch any command
 ./run_cli.sh pwd
 ```
+
+## Dependency
+
+This docker-compose environment is build based on two main containers :
+* [php-docker](https://github.com/seblegall/php-docker)
+* [php-cli-docker](https://github.com/seblegall/php-cli-docker)
