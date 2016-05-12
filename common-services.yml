@@ -1,0 +1,31 @@
+# DATA Volumes container
+data:
+    image: tianon/true
+    volumes:
+        # Git config
+        - "./volumes/.gitconfig:/root/.gitconfig"
+        # Applications
+        - "./volumes/apps:/srv/apps"
+        # nginx
+        - "./volumes/html:/usr/share/nginx/html"
+        - "./volumes/logs/nginx:/var/log/nginx"
+# CLI
+cli:
+    image: seblegall/php-cli-docker:7.0
+    volumes:
+        - $SSH_AUTH_SOCK:/root/.ssh/ssh-agent
+    environment:
+        SSH_AUTH_SOCK: /root/.ssh/ssh-agent
+        CHECK_SSH_GITLAB: 1
+    stdin_open: true
+    tty: true
+
+# PHP FPM
+phpfpm:
+    build: phpfpm
+
+nginx:
+    build: nginx
+    ports:
+        - "80"
+        - "443"

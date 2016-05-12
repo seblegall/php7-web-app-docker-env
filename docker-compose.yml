@@ -1,0 +1,64 @@
+# DATA Volumes container
+data:
+    container_name: php_app_data
+    extends:
+        file: common-services.yml
+        service: data
+# CLI
+cli:
+    container_name: php_app_cli
+    extends:
+        file: common-services.yml
+        service: cli
+    environment:
+        CHECK_SSH_GITLAB: 1
+    volumes_from:
+        - data
+# PHP FPM
+phpfpm:
+    container_name: php_app_phpfpm
+    extends:
+        file: common-services.yml
+        service: phpfpm
+    volumes_from:
+        - data
+    # links:
+    #     - "blackfire:blackfire"
+
+bfcli:
+  # container_name: php_app_bfcli
+  image: blackfire/blackfire
+  command: /bin/sh
+  # stdin_open: true
+  # tty: true
+  links:
+    - web:web
+  environment:
+    # Exposes the host BLACKFIRE_SERVER_ID and TOKEN environment variables.
+    - BLACKFIRE_SERVER_ID
+    - BLACKFIRE_SERVER_TOKEN
+
+blackfire:
+  image: blackfire/blackfire
+  environment:
+    # Exposes the host BLACKFIRE_SERVER_ID and TOKEN environment variables.
+    - BLACKFIRE_SERVER_ID
+    - BLACKFIRE_SERVER_TOKEN
+
+web:
+    container_name: php_app_web
+    extends:
+        file: common-services.yml
+        service: nginx
+
+    environment:
+        NGINX_ENABLED_VHOST: my-php-app
+    extra_hosts:
+        - "www.my-php-app.local:127.0.0.1"
+    links:
+        - phpfpm:phpfpm
+    volumes_from:
+        - data
+    ports:
+        - "80:80"
+        - "443:443"
