@@ -47,7 +47,7 @@ To get your full PHP7.0 development environment :
     extra_hosts:
         - "www.my-php-app.local:127.0.0.1"
     ```
-2. Edit the `nginx/docker-entrypoint.sh` file and update the local domain name you want to use :
+2. Edit the `phpfpm/docker-entrypoint.sh` file and update the local domain name you want to use :
     ```sh
     echo "${WEB_PORT_80_TCP_ADDR}    www.my-php-app.local" >> /etc/hosts
     ```
